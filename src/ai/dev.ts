@@ -1,1 +1,3 @@
-// Flows will be imported for their side effects in this file.
+import '@/ai/flows/document-summarization.ts';
+import '@/ai/flows/client-advice.ts';
+import '@/ai/flows/precedent-retrieval.ts';
