@@ -20,7 +20,7 @@ interface NavigationProps {
 
 export function Navigation({setSelectedMode}: NavigationProps) {
   return (
-    <Sidebar>
+    <Sidebar className="glass">
       <SidebarTrigger />
       <SidebarContent>
         <SidebarHeader className="text-center">
