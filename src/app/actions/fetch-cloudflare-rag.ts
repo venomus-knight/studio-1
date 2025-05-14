@@ -1,3 +1,4 @@
+
 // src/app/actions/fetch-cloudflare-rag.ts
 'use server';
 
@@ -44,8 +45,8 @@ export async function fetchCloudflareRag(input: z.infer<typeof CloudflareRagInpu
   const apiToken = process.env.CLOUDFLARE_API_TOKEN;
 
   if (!accountId || !ragId || !apiToken) {
-    console.error('Cloudflare API credentials or IDs are not set in environment variables.');
-    return { type: 'error', message: 'Server configuration error: Missing Cloudflare credentials.' };
+    console.error('Cloudflare API credentials or IDs are not set in environment variables. Please check your .env file.');
+    return { type: 'error', message: 'Server configuration error: Missing Cloudflare credentials. Ensure CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_RAG_ID, and CLOUDFLARE_API_TOKEN are set in your .env file.' };
   }
 
   const apiUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/autorag/rags/${ragId}/ai-search`;
@@ -63,21 +64,27 @@ export async function fetchCloudflareRag(input: z.infer<typeof CloudflareRagInpu
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`Cloudflare API error: ${response.status} ${response.statusText}`, errorBody);
-      return { type: 'error', message: `Cloudflare API request failed: ${response.statusText}`, details: errorBody };
+      console.error(`Cloudflare API HTTP error: ${response.status} ${response.statusText}`, errorBody);
+      return { type: 'error', message: `Cloudflare API request failed with status ${response.status}: ${response.statusText}`, details: errorBody };
     }
 
     const data = await response.json() as CloudflareAPIResponse;
 
-    if (!data.success || !data.result || typeof data.result.response !== 'string') {
-        console.error('Cloudflare API returned unsuccessful or malformed response:', data);
-        return { type: 'error', message: 'Failed to get a valid response from Cloudflare AutoRAG.', details: data.errors || data.messages };
+    if (!data.success) {
+      console.error('Cloudflare API returned success:false. Errors/Messages:', data.errors, data.messages);
+      return { type: 'error', message: 'Cloudflare AutoRAG request was not successful.', details: data.errors || data.messages || 'No additional error details provided by Cloudflare.' };
+    }
+    
+    // data.success is true, now check for the expected payload structure.
+    if (!data.result || typeof data.result.response !== 'string') {
+        console.error('Cloudflare API returned success:true but with malformed or missing result.response:', data);
+        return { type: 'error', message: 'Cloudflare AutoRAG returned an unexpected response structure despite overall success.', details: data };
     }
     
     return { type: 'success', rawTextResponse: data.result.response };
 
   } catch (error: any) {
-    console.error('Error calling Cloudflare AutoRAG API:', error);
+    console.error('Network or unexpected error calling Cloudflare AutoRAG API:', error);
     return { type: 'error', message: error.message || 'An unexpected error occurred while fetching data from Cloudflare.' };
   }
 }
