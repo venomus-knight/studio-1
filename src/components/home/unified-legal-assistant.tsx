@@ -17,6 +17,8 @@ import {retrievePrecedent, type RetrievePrecedentOutput} from '@/ai/flows/preced
 import {generateChecklist, type GenerateChecklistOutput} from '@/ai/flows/generate-checklist-flow';
 import {summarizeDocument, type SummarizeDocumentOutput} from '@/ai/flows/document-summarization';
 import {addDocumentToCustomLibrary, type AddDocumentInput} from '@/ai/flows/add-custom-document-flow';
+import {fetchCloudflareRag, type FetchCloudflareRagResult} from '@/app/actions/fetch-cloudflare-rag';
+import {parseStructuredLegalInfo, type ParseStructuredLegalInfoOutput} from '@/ai/flows/parse-structured-legal-info-flow';
 
 
 export function UnifiedLegalAssistant() {
@@ -26,7 +28,7 @@ export function UnifiedLegalAssistant() {
   const [mainQuery, setMainQuery] = useState('');
   const [isProcessingQuery, setIsProcessingQuery] = useState(false);
   const [lawsResult, setLawsResult] = useState<IdentifyLawsOutput | null>(null);
-  const [precedentsResult, setPrecedentsResult] = useState<RetrievePrecedentOutput | null>(null);
+  const [precedentsResult, setPrecedentsResult] = useState<Omit<RetrievePrecedentOutput, 'sourceType'> & { sourceType: string } | null>(null);
   const [checklistResult, setChecklistResult] = useState<GenerateChecklistOutput | null>(null);
   const [useCustomLibrary, setUseCustomLibrary] = useState(false);
 
@@ -86,9 +88,8 @@ export function UnifiedLegalAssistant() {
         title: "Library Updated", 
         description: `${result.message} Library now contains ${result.librarySize} document(s).`
       });
-      setCustomRagFile(null); // Reset file input
+      setCustomRagFile(null); 
       setCustomRagFileContent(null);
-      // Optionally, clear the file input element itself
       const fileInput = document.getElementById('custom-rag-upload') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
 
@@ -112,34 +113,65 @@ export function UnifiedLegalAssistant() {
     setChecklistResult(null);
 
     try {
-      const [lawsData, precedentsData, checklistData] = await Promise.all([
-        identifyLaws({query: mainQuery}).catch(e => {
-          console.error('Error identifying laws:', e);
-          toast({title: 'Error Identifying Laws', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
-          return null;
-        }),
-        retrievePrecedent({legalQuestion: mainQuery, useCustomLibrary}).catch(e => {
-          console.error('Error retrieving precedents:', e);
-          toast({title: 'Error Retrieving Precedents', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
-          return null;
-        }),
-        generateChecklist({query: mainQuery, jurisdiction: 'India'}).catch(e => { 
-          console.error('Error generating checklist:', e);
-          toast({title: 'Error Generating Checklist', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
-          return null;
-        }),
-      ]);
+      if (useCustomLibrary) {
+        // Use existing Genkit flows for custom library
+        const [lawsData, precedentsData, checklistData] = await Promise.all([
+          identifyLaws({query: mainQuery}).catch(e => {
+            console.error('Error identifying laws (custom):', e);
+            toast({title: 'Error Identifying Laws', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
+            return null;
+          }),
+          retrievePrecedent({legalQuestion: mainQuery, useCustomLibrary: true}).catch(e => {
+            console.error('Error retrieving precedents (custom):', e);
+            toast({title: 'Error Retrieving Precedents', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
+            return null;
+          }),
+          generateChecklist({query: mainQuery, jurisdiction: 'India'}).catch(e => { 
+            console.error('Error generating checklist (custom):', e);
+            toast({title: 'Error Generating Checklist', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
+            return null;
+          }),
+        ]);
 
-      if (lawsData) setLawsResult(lawsData);
-      if (precedentsData) setPrecedentsResult(precedentsData);
-      if (checklistData) setChecklistResult(checklistData);
+        if (lawsData) setLawsResult(lawsData);
+        if (precedentsData) setPrecedentsResult(precedentsData);
+        if (checklistData) setChecklistResult(checklistData);
+        if (lawsData || precedentsData || checklistData) {
+            toast({title: 'Insights Generated (Custom Library)', description: 'Legal insights from your library have been processed.'});
+        } else {
+            toast({title: 'No Insights (Custom Library)', description: 'Could not generate insights from your custom library.', variant: 'destructive'});
+        }
 
-      if (lawsData || precedentsData || checklistData) {
-        toast({title: 'Insights Generated', description: 'Legal insights have been processed.'});
       } else {
-        toast({title: 'No Insights Generated', description: 'Could not generate any insights. Please try refining your query.', variant: 'destructive'});
-      }
+        // Use Cloudflare AutoRAG and Genkit parser for default queries
+        const cloudflareResult: FetchCloudflareRagResult = await fetchCloudflareRag({ userQuery: mainQuery });
 
+        if (cloudflareResult.type === 'error') {
+          console.error('Cloudflare RAG Error:', cloudflareResult.message, cloudflareResult.details);
+          toast({ title: 'Cloudflare RAG Error', description: cloudflareResult.message, variant: 'destructive' });
+          return; // Exit early on Cloudflare error
+        }
+        
+        if (!cloudflareResult.rawTextResponse.trim()) {
+            toast({ title: 'Empty Response from Cloudflare', description: 'Cloudflare AutoRAG returned an empty response.', variant: 'destructive' });
+            setLawsResult({ laws: [] });
+            setPrecedentsResult({ precedents: [], sourceType: "Cloudflare AutoRAG (Empty)" });
+            setChecklistResult({ checklist: [] });
+            return;
+        }
+
+        const parsedData: ParseStructuredLegalInfoOutput = await parseStructuredLegalInfo({ rawText: cloudflareResult.rawTextResponse });
+        
+        setLawsResult({ laws: parsedData.laws || [] });
+        setPrecedentsResult({ precedents: parsedData.precedents || [], sourceType: "Cloudflare AutoRAG" });
+        setChecklistResult({ checklist: parsedData.checklist || [] });
+
+        if (parsedData.laws.length > 0 || parsedData.precedents.length > 0 || parsedData.checklist.length > 0) {
+          toast({title: 'Insights Generated (Cloudflare)', description: 'Legal insights via Cloudflare AutoRAG have been processed.'});
+        } else {
+          toast({title: 'No Structured Insights (Cloudflare)', description: 'Could not structure insights from Cloudflare response. The raw response might be incomplete or not in the expected format.', variant: 'destructive'});
+        }
+      }
     } catch (error: any) {
       console.error('Error processing query:', error);
       toast({title: 'Processing Error', description: error.message || 'An unexpected error occurred.', variant: 'destructive'});
@@ -173,7 +205,7 @@ export function UnifiedLegalAssistant() {
         <Card className="glass-dark">
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl">Legal Query Input</CardTitle>
-            <CardDescription>Enter your legal question or describe your case details below.</CardDescription>
+            <CardDescription>Enter your legal question or describe your case details below. Uses Cloudflare AutoRAG by default, or your custom library if switched on.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea
@@ -191,7 +223,7 @@ export function UnifiedLegalAssistant() {
                 aria-label="Toggle custom case library"
               />
               <Label htmlFor="custom-library-switch" className="text-sm">
-                Reference My Custom Case Library
+                Reference My Custom Case Library (Uses Gemini)
               </Label>
             </div>
             <Button onClick={handleGetInsights} disabled={isProcessingQuery} size="lg" className="w-full text-base">
