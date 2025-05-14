@@ -45,7 +45,7 @@ export async function fetchCloudflareRag(input: z.infer<typeof CloudflareRagInpu
   const apiToken = process.env.CLOUDFLARE_API_TOKEN;
 
   if (!accountId || !ragId || !apiToken) {
-    console.error('Cloudflare API credentials or IDs are not set in environment variables. Please check your .env file.');
+    console.error('Cloudflare API credentials or IDs are not set in environment variables. Please check your .env file. Specifically, ensure CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_RAG_ID, and CLOUDFLARE_API_TOKEN are all present and correct.');
     return { type: 'error', message: 'Server configuration error: Missing Cloudflare credentials. Ensure CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_RAG_ID, and CLOUDFLARE_API_TOKEN are set in your .env file.' };
   }
 
@@ -57,7 +57,7 @@ export async function fetchCloudflareRag(input: z.infer<typeof CloudflareRagInpu
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiToken}`,
+        'Authorization': `Bearer ${apiToken}`, // Using Bearer token as per Cloudflare requirements
       },
       body: JSON.stringify({ query: promptForCloudflare }),
     });
