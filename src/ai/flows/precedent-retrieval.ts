@@ -80,8 +80,22 @@ const retrievePrecedentFlow = ai.defineFlow<
     outputSchema: RetrievePrecedentOutputSchema,
   },
   async input => {
-    // In a real RAG system, 'useCustomLibrary' would determine which vector store to query.
-    // For now, it's mainly a prompt differentiator.
+    // Default Knowledge Base Simulation:
+    // Currently, when 'useCustomLibrary' is false, this flow simulates accessing a
+    // comprehensive default RAG (Retrieval Augmented Generation) knowledge base of
+    // past Indian court cases. This simulation is achieved by leveraging the LLM's
+    // broad training data, guided by the prompt above. There isn't a separate
+    // document upload mechanism for this default base within the current application structure.
+    //
+    // Custom Library (Future RAG Implementation):
+    // When 'useCustomLibrary' is true, it's intended to (eventually) query a user-specific
+    // vector store. This vector store would be populated by documents uploaded by the user
+    // via the "My Custom Case Library" UI feature.
+    //
+    // For now, 'useCustomLibrary' primarily acts as a prompt differentiator.
+    // A full RAG implementation would involve setting up a vector database and ingestion
+    // pipelines for both default and custom documents, allowing the AI to retrieve
+    // specific text chunks to "augment" its generation process.
     const {output} = await prompt(input);
     return output!;
   }
