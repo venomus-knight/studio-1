@@ -2,13 +2,14 @@
 
 import React, {useState, useCallback} from 'react';
 import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardHeader, CardTitle, CardDescription} from '@/components/ui/card';
 import {Textarea} from '@/components/ui/textarea';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {Icons} from '@/components/icons';
 import {useToast} from '@/hooks/use-toast';
+import { Switch } from "@/components/ui/switch";
 
 import {identifyLaws, type IdentifyLawsOutput} from '@/ai/flows/identify-laws-flow';
 import {retrievePrecedent, type RetrievePrecedentOutput} from '@/ai/flows/precedent-retrieval';
@@ -24,12 +25,18 @@ export function UnifiedLegalAssistant() {
   const [lawsResult, setLawsResult] = useState<IdentifyLawsOutput | null>(null);
   const [precedentsResult, setPrecedentsResult] = useState<RetrievePrecedentOutput | null>(null);
   const [checklistResult, setChecklistResult] = useState<GenerateChecklistOutput | null>(null);
+  const [useCustomLibrary, setUseCustomLibrary] = useState(false);
+
 
   // Document summarization states
   const [documentText, setDocumentText] = useState('');
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summaryResult, setSummaryResult] = useState<SummarizeDocumentOutput | null>(null);
+
+  // Custom RAG states
+  const [customRagFile, setCustomRagFile] = useState<File | null>(null);
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,6 +50,25 @@ export function UnifiedLegalAssistant() {
       reader.readAsText(file);
     }
   };
+
+  const handleCustomRagFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCustomRagFile(file);
+      // Placeholder for actual file processing for RAG
+      toast({ title: "File Selected", description: `${file.name} selected for custom library. Processing coming soon.` });
+    }
+  };
+
+  const handleAddCustomRagDocument = () => {
+    if (!customRagFile) {
+      toast({ title: "No File Selected", description: "Please select a document to add to your library.", variant: "destructive" });
+      return;
+    }
+    // Placeholder for actual RAG document addition logic
+    toast({ title: "Feature in Development", description: `Adding '${customRagFile.name}' to custom library is coming soon.` });
+  };
+
 
   const handleGetInsights = useCallback(async () => {
     if (!mainQuery.trim()) {
@@ -62,7 +88,7 @@ export function UnifiedLegalAssistant() {
           toast({title: 'Error Identifying Laws', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
           return null;
         }),
-        retrievePrecedent({legalQuestion: mainQuery}).catch(e => {
+        retrievePrecedent({legalQuestion: mainQuery, useCustomLibrary}).catch(e => {
           console.error('Error retrieving precedents:', e);
           toast({title: 'Error Retrieving Precedents', description: e.message || 'An unknown error occurred.', variant: 'destructive'});
           return null;
@@ -90,7 +116,7 @@ export function UnifiedLegalAssistant() {
     } finally {
       setIsProcessingQuery(false);
     }
-  }, [mainQuery, toast]);
+  }, [mainQuery, toast, useCustomLibrary]);
 
   const handleSummarizeDocument = useCallback(async () => {
     if (!documentText.trim()) {
@@ -126,6 +152,16 @@ export function UnifiedLegalAssistant() {
               rows={4}
               className="text-base"
             />
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="custom-library-switch"
+                checked={useCustomLibrary}
+                onCheckedChange={setUseCustomLibrary}
+              />
+              <Label htmlFor="custom-library-switch" className="text-sm">
+                Reference My Custom Case Library (Beta)
+              </Label>
+            </div>
             <Button onClick={handleGetInsights} disabled={isProcessingQuery} size="lg" className="w-full">
               {isProcessingQuery ? (
                 <>
@@ -139,7 +175,7 @@ export function UnifiedLegalAssistant() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="glass-dark">
             <CardHeader>
               <CardTitle className="flex items-center"><Icons.scale className="mr-2 h-5 w-5" />Applicable Laws & Articles</CardTitle>
@@ -167,10 +203,16 @@ export function UnifiedLegalAssistant() {
               {precedentsResult && precedentsResult.precedents.length > 0 && (
                 <ScrollArea className="h-[200px] pr-3">
                   {precedentsResult.precedents.map((p, index) => (
-                    <div key={index} className="mb-3 p-2 border border-border rounded-md bg-background/30">
-                      <p className="font-semibold">{p.caseName}</p>
-                      <p className="text-xs text-muted-foreground">Citation: {p.citation}</p>
-                      <p className="text-sm mt-1">{p.summary}</p>
+                    <div key={index} className="mb-3 p-3 border border-border rounded-md bg-background/30 glass">
+                      <p className="font-semibold text-base">{p.caseName}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
+                      <p className="text-sm mt-2">{p.summary}</p>
+                      {p.differences && (
+                        <div className="mt-2 pt-2 border-t border-border/50">
+                            <p className="text-xs font-semibold text-amber-400">Notable Differences:</p>
+                            <p className="text-xs text-amber-300">{p.differences}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </ScrollArea>
@@ -197,9 +239,37 @@ export function UnifiedLegalAssistant() {
               {!isProcessingQuery && !checklistResult && <p className="text-muted-foreground text-sm">Results will appear here.</p>}
             </CardContent>
           </Card>
-            <Card className="glass-dark">
+
+          <Card className="glass-dark md:col-span-2 lg:col-span-1"> {/* Adjust span for layout */}
+            <CardHeader>
+                <CardTitle className="flex items-center"><Icons.library className="mr-2 h-5 w-5" />My Custom Case Library</CardTitle>
+                <CardDescription className="text-xs">Upload your documents to create a personalized knowledge base for the AI to reference.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="custom-rag-upload" className="text-sm font-medium">Upload Document (.txt, .md, .pdf)</Label>
+                  <Input id="custom-rag-upload" type="file" onChange={handleCustomRagFileChange} accept=".txt,.md,.pdf" className="mt-1"/>
+                </div>
+                <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile} className="w-full">
+                  <Icons.plusCircle className="mr-2 h-4 w-4" />
+                  Add to My Library (Coming Soon)
+                </Button>
+                <div className="mt-2 text-center">
+                    <p className="text-xs text-muted-foreground">
+                        {customRagFile ? `Selected: ${customRagFile.name}` : "No document selected."}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Feature to build and query custom RAG is under development.
+                    </p>
+                </div>
+            </CardContent>
+          </Card>
+
+
+            <Card className="glass-dark md:col-span-2"> {/* Adjust span for layout */}
               <CardHeader>
                 <CardTitle className="flex items-center"><Icons.bookOpenText className="mr-2 h-5 w-5" />Simplify Judgment / Document</CardTitle>
+                 <CardDescription className="text-xs">Upload or paste text from a single document to get a simplified summary.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -228,7 +298,7 @@ export function UnifiedLegalAssistant() {
                 </Button>
                 {isSummarizing && !summaryResult && <Icons.loader className="mx-auto mt-4 h-8 w-8 animate-spin text-primary" />}
                 {summaryResult && (
-                  <div className="mt-4 p-3 border border-border rounded-md bg-background/30">
+                  <div className="mt-4 p-3 border border-border rounded-md bg-background/30 glass">
                     <p className="font-semibold text-base">Summary:</p>
                     <p className="text-sm whitespace-pre-wrap">{summaryResult.summary}</p>
                   </div>

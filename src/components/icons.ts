@@ -31,6 +31,7 @@ import {
   X,
   ListChecks,
   BookOpenText,
+  Library, // Added Library icon
 } from 'lucide-react';
 
 const Icons = {
@@ -41,7 +42,6 @@ const Icons = {
   workflow: Workflow,
   close: X,
   copy: Copy,
-  dark: Moon,
   edit: Edit,
   externalLink: ExternalLink,
   file: File,
@@ -61,14 +61,15 @@ const Icons = {
   spinner: Loader2,
   trash: Trash,
   user: User,
-  clientAdvice: Lightbulb, // Can be repurposed or removed if not used
-  precedentRetrieval: Scale, // Used for precedents, keep
-  documentSummarizer: FileText, // Can be used for generic file/document icon
-  bookOpenCheck: BookOpenCheck, // Main app icon
-  scale: Scale, // Re-added for clarity for Applicable Laws
-  fileText: FileText, // Re-added for clarity for Precedents
-  listChecks: ListChecks, // For checklists
-  bookOpenText: BookOpenText, // For document summary/simplified judgment
+  clientAdvice: Lightbulb, 
+  precedentRetrieval: Scale, 
+  documentSummarizer: FileText, 
+  bookOpenCheck: BookOpenCheck, 
+  scale: Scale, 
+  fileText: FileText, 
+  listChecks: ListChecks, 
+  bookOpenText: BookOpenText, 
+  library: Library, // Added Library icon
 };
 
 export {Icons};
