@@ -1,35 +1,16 @@
 'use client';
 
-import {
-  Navigation,
-  ModeContent,
-  ClientAdviceMode,
-  LawyerAssistantMode,
-} from '@/components/home';
+import {Navigation} from '@/components/home/navigation';
+import {UnifiedLegalAssistant} from '@/components/home/unified-legal-assistant';
 import {SidebarProvider} from '@/components/ui/sidebar';
-import React, {useState} from 'react';
+import React from 'react';
 
 export default function Home() {
-  const [selectedMode, setSelectedMode] = useState<'client' | 'lawyer'>(
-    'client'
-  );
-
-  const renderModeContent = () => {
-    switch (selectedMode) {
-      case 'client':
-        return <ClientAdviceMode />;
-      case 'lawyer':
-        return <LawyerAssistantMode />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
-        <Navigation setSelectedMode={setSelectedMode} />
-        <ModeContent>{renderModeContent()}</ModeContent>
+      <div className="flex h-screen bg-background">
+        <Navigation />
+        <UnifiedLegalAssistant />
       </div>
     </SidebarProvider>
   );

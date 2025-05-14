@@ -29,6 +29,8 @@ import {
   Scale,
   FileText,
   X,
+  ListChecks,
+  BookOpenText,
 } from 'lucide-react';
 
 const Icons = {
@@ -59,12 +61,14 @@ const Icons = {
   spinner: Loader2,
   trash: Trash,
   user: User,
-  clientAdvice: Lightbulb,
-  precedentRetrieval: Scale,
-  documentSummarizer: FileText,
-  bookOpenCheck: BookOpenCheck,
+  clientAdvice: Lightbulb, // Can be repurposed or removed if not used
+  precedentRetrieval: Scale, // Used for precedents, keep
+  documentSummarizer: FileText, // Can be used for generic file/document icon
+  bookOpenCheck: BookOpenCheck, // Main app icon
+  scale: Scale, // Re-added for clarity for Applicable Laws
+  fileText: FileText, // Re-added for clarity for Precedents
+  listChecks: ListChecks, // For checklists
+  bookOpenText: BookOpenText, // For document summary/simplified judgment
 };
 
 export {Icons};
-
-    

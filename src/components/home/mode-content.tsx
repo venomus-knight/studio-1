@@ -1,9 +1,4 @@
-import React from 'react';
-
-interface ModeContentProps {
-  children: React.ReactNode;
-}
-
-export function ModeContent({children}: ModeContentProps) {
-  return <div className="flex-1 p-4">{children}</div>;
-}
+// This file is no longer used and can be deleted.
+// I am leaving it empty to signify it's been handled.
+// In a real scenario, you would delete this file from your project.
+export {};
