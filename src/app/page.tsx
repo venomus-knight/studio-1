@@ -11,9 +11,9 @@ function LandingHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Icons.scale className="h-6 w-6 text-accent" />
+          <Icons.emblemOfIndia className="h-8 w-8 text-accent" /> {/* Updated Icon */}
           <span className="font-bold sm:inline-block font-lora text-lg">
-            LegalPrecedentAI <span className="text-accent font-lora">भारत</span>
+            NYAI <span className="text-accent font-lora">भारत</span> {/* Updated Name */}
           </span>
         </Link>
         <nav className="flex items-center gap-4 text-sm lg:gap-6 ml-auto">
@@ -43,7 +43,7 @@ function LandingHeader() {
           </Button>
            <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent/10">
             सत्यमेव जयते
-          </Button>
+           </Button>
         </nav>
       </div>
     </header>
@@ -59,14 +59,14 @@ export default function LandingPage() {
         <section className="container grid lg:grid-cols-2 gap-12 px-4 md:px-6 py-12 md:py-24 lg:py-32 items-center">
           <div className="space-y-6">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-lora text-primary">
-              The Precedent Research Platform For Indian Legal Professionals
+              The Precedent Research Platform For Indian Legal Professionals {/* Name removed, generic title kept */}
             </h1>
             <p className="max-w-[600px] text-foreground/80 md:text-xl">
-              Access landmark judgments from the Supreme Court of India and High Courts. Find relevant case precedents with advanced AI powered by Indian legal knowledge.
+              Powered by NYAI. Access landmark judgments from the Supreme Court of India and High Courts. Find relevant case precedents with advanced AI and Indian legal knowledge. {/* Updated Name */}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                <Link href="/assistant">Try Free Demo <Icons.arrowRight className="ml-2 h-5 w-5" /></Link>
+                <Link href="/assistant">Try NYAI Demo <Icons.arrowRight className="ml-2 h-5 w-5" /></Link> {/* Updated Name */}
               </Button>
               <Button variant="outline" size="lg" className="border-primary hover:bg-secondary text-primary">
                 Schedule a Demo
@@ -88,7 +88,7 @@ export default function LandingPage() {
           </div>
           <Card className="p-8 bg-card shadow-xl rounded-xl flex flex-col items-center justify-center space-y-6 min-h-[400px]">
             <Icons.penTool className="h-20 w-20 text-primary" />
-            <h2 className="text-3xl font-bold text-center font-lora text-primary">LegalPrecedent AI</h2>
+            <h2 className="text-3xl font-bold text-center font-lora text-primary">NYAI</h2> {/* Updated Name */}
             <p className="text-center text-foreground/80">
               A modern legal research platform
             </p>
@@ -102,7 +102,7 @@ export default function LandingPage() {
       </main>
        <footer className="py-8 border-t">
         <div className="container text-center text-sm text-foreground/60">
-          © {new Date().getFullYear()} LegalPrecedentAI. All rights reserved.
+          © {new Date().getFullYear()} NYAI. All rights reserved. {/* Updated Name */}
         </div>
       </footer>
     </div>

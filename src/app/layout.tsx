@@ -15,7 +15,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: 'LegalPrecedentAI - The Precedent Research Platform',
+  title: 'NYAI - The Precedent Research Platform',
   description:
     'Access landmark judgments from the Supreme Court of India and High Courts. Find relevant case precedents with advanced AI powered by Indian legal knowledge.',
 };
