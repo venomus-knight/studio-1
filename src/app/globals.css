@@ -43,8 +43,8 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem; /* Buttons in image have slight rounding */
 
-    /* Sidebar specific theme variables - coffee theme for sidebar */
-    --sidebar-background: 30 35% 25%; /* Dark rich coffee brown */
+    /* Sidebar specific theme variables */
+    --sidebar-background: 39 25% 25%; /* Dark brown based on rgba(80, 69, 48, 0.9) */
     --sidebar-foreground: 30 15% 88%; /* Off-white/light beige text */
     --sidebar-primary: 38 65% 65%;   /* Ochre/gold for icon, slightly brighter for dark bg */
     --sidebar-primary-foreground: 30 35% 15%; /* Dark text for on-primary elements if any */
@@ -82,7 +82,7 @@ body {
     --chart-5: 340 75% 55%;
 
     /* Dark mode sidebar - can be same as light or inverted if a dark theme is fully developed */
-    --sidebar-background: 30 35% 25%; 
+    --sidebar-background: 39 25% 25%; /* Dark brown based on rgba(80, 69, 48, 0.9) */
     --sidebar-foreground: 30 15% 88%;
     --sidebar-primary: 38 65% 65%;
     --sidebar-primary-foreground: 30 35% 15%;
