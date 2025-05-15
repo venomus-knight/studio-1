@@ -1,3 +1,4 @@
+// src/components/home/navigation.tsx
 'use client';
 
 import {Icons} from '@/components/icons';
@@ -9,17 +10,22 @@ import {
   SidebarTrigger,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
+import Link from 'next/link'; // Import Link
 import React from 'react';
 
 export function Navigation() {
   return (
-    <Sidebar className="glass">
+    <Sidebar>
       <SidebarTrigger />
       <SidebarContent>
-        <SidebarHeader className="text-center">
-          <Icons.bookOpenCheck className="mx-auto h-12 w-12 text-primary" />
-          <h1 className="font-semibold text-xl mt-2">NyayaMitra</h1>
-          <p className="text-sm text-muted-foreground">Your AI Legal Assistant</p>
+        <SidebarHeader className="text-center p-4">
+          <Link href="/" className="flex flex-col items-center space-y-1 group">
+            <Icons.scale className="h-10 w-10 text-sidebar-primary group-hover:text-accent" />
+            <h1 className="font-semibold text-lg mt-1 font-lora text-sidebar-foreground group-hover:text-accent">
+              LegalPrecedentAI
+            </h1>
+          </Link>
+          <p className="text-xs text-muted-foreground">AI Legal Assistant</p>
         </SidebarHeader>
         <SidebarSeparator />
          <div className="p-4 text-center">
@@ -28,9 +34,9 @@ export function Navigation() {
           </p>
         </div>
       </SidebarContent>
-      <SidebarFooter className="text-center">
+      <SidebarFooter className="text-center p-4">
         <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} NyayaMitra
+          © {new Date().getFullYear()} LegalPrecedentAI
         </p>
       </SidebarFooter>
     </Sidebar>

@@ -149,7 +149,8 @@ export function UnifiedLegalAssistant() {
         if (cloudflareResult.type === 'error') {
           console.error('Cloudflare RAG Error:', cloudflareResult.message, cloudflareResult.details);
           toast({ title: 'Cloudflare RAG Error', description: cloudflareResult.message, variant: 'destructive' });
-          return; // Exit early on Cloudflare error
+          setIsProcessingQuery(false); // ensure button is re-enabled
+          return; 
         }
         
         if (!cloudflareResult.rawTextResponse.trim()) {
@@ -157,6 +158,7 @@ export function UnifiedLegalAssistant() {
             setLawsResult({ laws: [] });
             setPrecedentsResult({ precedents: [], sourceType: "Cloudflare AutoRAG (Empty)" });
             setChecklistResult({ checklist: [] });
+            setIsProcessingQuery(false); // ensure button is re-enabled
             return;
         }
 
@@ -200,11 +202,11 @@ export function UnifiedLegalAssistant() {
   }, [documentTextForSummary, toast]);
 
   return (
-    <ScrollArea className="flex-1 h-full">
+    <ScrollArea className="flex-1 h-full bg-background">
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-        <Card className="glass-dark">
+        <Card className="assistant-card">
           <CardHeader>
-            <CardTitle className="text-xl md:text-2xl">Legal Query Input</CardTitle>
+            <CardTitle className="text-xl md:text-2xl font-lora">Legal Query Input</CardTitle>
             <CardDescription>Enter your legal question or describe your case details below. Uses Cloudflare AutoRAG by default, or your custom library if switched on.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -226,7 +228,7 @@ export function UnifiedLegalAssistant() {
                 Reference My Custom Case Library (Uses Gemini)
               </Label>
             </div>
-            <Button onClick={handleGetInsights} disabled={isProcessingQuery} size="lg" className="w-full text-base">
+            <Button onClick={handleGetInsights} disabled={isProcessingQuery} size="lg" className="w-full text-base bg-primary text-primary-foreground hover:bg-primary/90">
               {isProcessingQuery ? (
                 <>
                   <Icons.loader className="mr-2 h-5 w-5 animate-spin" />
@@ -240,9 +242,9 @@ export function UnifiedLegalAssistant() {
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="glass-dark">
+          <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg"><Icons.scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><Icons.scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
             </CardHeader>
             <CardContent className="min-h-[150px]">
               {isProcessingQuery && !lawsResult && <div className="flex justify-center items-center h-full"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
@@ -258,9 +260,9 @@ export function UnifiedLegalAssistant() {
             </CardContent>
           </Card>
 
-          <Card className="glass-dark">
+          <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg"><Icons.fileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><Icons.fileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
                {precedentsResult && <CardDescription className="text-xs pt-1">Sourced from: {precedentsResult.sourceType}</CardDescription>}
             </CardHeader>
             <CardContent className="min-h-[150px] space-y-3">
@@ -268,14 +270,14 @@ export function UnifiedLegalAssistant() {
               {precedentsResult && precedentsResult.precedents.length > 0 && (
                 <ScrollArea className="h-[220px] pr-3 -mr-3">
                   {precedentsResult.precedents.map((p, index) => (
-                    <div key={index} className="mb-3 p-3 border border-border/70 rounded-lg bg-background/40 glass">
-                      <p className="font-semibold text-base">{p.caseName}</p>
+                    <div key={index} className="mb-3 p-3 border border-border/70 rounded-lg bg-background/40">
+                      <p className="font-semibold text-base font-lora">{p.caseName}</p>
                       <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
                       <p className="text-sm mt-2">{p.summary}</p>
                       {p.differences && (
                         <div className="mt-2 pt-2 border-t border-border/50">
-                            <p className="text-xs font-semibold text-amber-500">Notable Differences:</p>
-                            <p className="text-xs text-amber-400">{p.differences}</p>
+                            <p className="text-xs font-semibold text-accent">Notable Differences:</p>
+                            <p className="text-xs text-accent/80">{p.differences}</p>
                         </div>
                       )}
                     </div>
@@ -287,9 +289,9 @@ export function UnifiedLegalAssistant() {
             </CardContent>
           </Card>
 
-          <Card className="glass-dark">
+          <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg"><Icons.listChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><Icons.listChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
             </CardHeader>
             <CardContent className="min-h-[150px]">
               {isProcessingQuery && !checklistResult && <div className="flex justify-center items-center h-full"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
@@ -305,17 +307,17 @@ export function UnifiedLegalAssistant() {
             </CardContent>
           </Card>
 
-          <Card className="glass-dark md:col-span-2 lg:col-span-1">
+          <Card className="assistant-card md:col-span-2 lg:col-span-1">
             <CardHeader>
-                <CardTitle className="flex items-center text-lg"><Icons.library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
-                <CardDescription className="text-xs pt-1">Upload your documents (.txt, .md) to create a personalized knowledge base for the AI to reference. This is a simplified simulation.</CardDescription>
+                <CardTitle className="flex items-center text-lg font-lora"><Icons.library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
+                <CardDescription className="text-xs pt-1">Upload your documents (.txt, .md) to create a personalized knowledge base for the AI to reference.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
                 <div>
                   <Label htmlFor="custom-rag-upload" className="text-sm font-medium">Upload Document</Label>
                   <Input id="custom-rag-upload" type="file" onChange={handleCustomRagFileChange} accept=".txt,.md" className="mt-1"/>
                 </div>
-                <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile || isAddingToLibrary} className="w-full">
+                <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile || isAddingToLibrary} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   {isAddingToLibrary ? <Icons.loader className="mr-2 h-4 w-4 animate-spin" /> : <Icons.plusCircle className="mr-2 h-4 w-4" />}
                   {isAddingToLibrary ? 'Adding...' : 'Add to My Library'}
                 </Button>
@@ -328,9 +330,9 @@ export function UnifiedLegalAssistant() {
           </Card>
 
 
-            <Card className="glass-dark md:col-span-2">
+            <Card className="assistant-card md:col-span-2">
               <CardHeader>
-                <CardTitle className="flex items-center text-lg"><Icons.bookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
+                <CardTitle className="flex items-center text-lg font-lora"><Icons.bookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
                  <CardDescription className="text-xs pt-1">Upload or paste text from a single document (.txt, .md) to get a simplified summary.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -348,7 +350,7 @@ export function UnifiedLegalAssistant() {
                   rows={6}
                   className="text-sm"
                 />
-                <Button onClick={handleSummarizeDocument} disabled={isSummarizing || !documentTextForSummary.trim()} className="w-full">
+                <Button onClick={handleSummarizeDocument} disabled={isSummarizing || !documentTextForSummary.trim()} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   {isSummarizing ? (
                     <>
                       <Icons.loader className="mr-2 h-4 w-4 animate-spin" />
@@ -361,8 +363,8 @@ export function UnifiedLegalAssistant() {
                 {isSummarizing && !summaryResult && <div className="flex justify-center items-center pt-4"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
                 {summaryResult && (
                   <ScrollArea className="h-[150px] mt-4 pr-3 -mr-3">
-                    <div className="p-3 border border-border/70 rounded-lg bg-background/40 glass">
-                      <p className="font-semibold text-base">Summary:</p>
+                    <div className="p-3 border border-border/70 rounded-lg bg-background/40">
+                      <p className="font-semibold text-base font-lora">Summary:</p>
                       <p className="text-sm whitespace-pre-wrap">{summaryResult.summary}</p>
                     </div>
                   </ScrollArea>

@@ -31,7 +31,11 @@ import {
   X,
   ListChecks,
   BookOpenText,
-  Library, // Added Library icon
+  Library,
+  PenTool, // Added PenTool
+  Landmark, // Added Landmark
+  Building, // Added Building
+  BookOpen, // Added BookOpen
 } from 'lucide-react';
 
 const Icons = {
@@ -69,7 +73,11 @@ const Icons = {
   fileText: FileText, 
   listChecks: ListChecks, 
   bookOpenText: BookOpenText, 
-  library: Library, // Added Library icon
+  library: Library,
+  penTool: PenTool,
+  landmark: Landmark,
+  building: Building,
+  bookOpen: BookOpen,
 };
 
 export {Icons};
