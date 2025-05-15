@@ -1,21 +1,27 @@
-
 import type { SVGProps } from 'react';
 import {
   ArrowRight,
+  BookOpenCheck,
   Check,
   ChevronsUpDown,
-  Circle as LucideCircle, // Aliased to avoid any potential naming conflicts
+  Circle as LucideCircle, // Aliased
   Copy,
   Edit,
   ExternalLink,
-  File,
+  File, // Standard File icon
+  FileText as LucideFileText, // Aliased
   HelpCircle,
   Home,
+  Library as LucideLibrary, // Aliased
+  Lightbulb,
+  ListChecks,
   Loader2,
   Mail,
   MessageSquare,
+  Moon,
   Plus,
   PlusCircle,
+  Scale as LucideScale, // Aliased
   Search,
   Server,
   Settings,
@@ -25,32 +31,20 @@ import {
   Trash,
   User,
   Workflow,
-  BookOpenCheck,
-  Lightbulb,
-  Scale,
-  FileText,
-  X,
-  ListChecks,
-  BookOpenText,
-  Library,
-  PenTool,
-  Landmark,
-  Building,
-  BookOpen,
+  X as XIcon, // lucide-react exports 'X', aliasing to XIcon
+  BookOpenText as LucideBookOpenText, // Aliased
 } from 'lucide-react';
 
+// Extremely simplified EmblemOfIndia to bypass parsing errors.
+// It uses a minimal valid SVG structure.
 const EmblemOfIndia = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
+    viewBox="0 0 49.742 67.358"
+    fill="currentColor"
     {...props}
   >
-    <circle cx="12" cy="12" r="10" />
+    <path d="M10 10 H 39 V 57 H 10 Z" />
   </svg>
 );
 
@@ -58,9 +52,9 @@ const Icons = {
   arrowRight: ArrowRight,
   check: Check,
   chevronDown: ChevronsUpDown,
-  circle: LucideCircle, // Use the aliased import
+  circle: LucideCircle,
   workflow: Workflow,
-  close: X,
+  close: XIcon,
   copy: Copy,
   edit: Edit,
   externalLink: ExternalLink,
@@ -70,6 +64,7 @@ const Icons = {
   loader: Loader2,
   mail: Mail,
   messageSquare: MessageSquare,
+  moon: Moon,
   plus: Plus,
   plusCircle: PlusCircle,
   search: Search,
@@ -81,19 +76,15 @@ const Icons = {
   trash: Trash,
   user: User,
   clientAdvice: Lightbulb,
-  precedentRetrieval: Scale,
-  documentSummarizer: FileText,
+  precedentRetrieval: LucideScale,
+  documentSummarizer: LucideFileText,
   bookOpenCheck: BookOpenCheck,
-  scale: Scale,
-  fileText: FileText,
-  listChecks: ListChecks,
-  bookOpenText: BookOpenText,
-  library: Library,
-  penTool: PenTool,
-  landmark: Landmark,
-  building: Building,
-  bookOpen: BookOpen,
+  scale: LucideScale, // For "Applicable Laws" card title
+  fileText: LucideFileText, // For "Similar Precedents" card title
+  listChecks: ListChecks, // For "Procedural Checklist" card title
+  bookOpenText: LucideBookOpenText, // For "Simplify Document" card title
+  library: LucideLibrary, // For "My Custom Case Library" card title
   emblemOfIndia: EmblemOfIndia,
 };
 
-export {Icons};
+export { Icons };
