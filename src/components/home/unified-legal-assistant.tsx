@@ -201,6 +201,19 @@ export function UnifiedLegalAssistant() {
     }
   }, [documentTextForSummary, toast]);
 
+  const renderLoadingState = () => (
+    <div className="flex flex-1 justify-center items-center h-full p-4">
+      <Icons.loader className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+
+  const renderEmptyState = (message: string) => (
+     <div className="flex flex-1 justify-center items-center h-full p-4">
+      <p className="text-muted-foreground text-sm text-center">{message}</p>
+    </div>
+  );
+
+
   return (
     <ScrollArea className="flex-1 h-full bg-background">
       <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
@@ -246,17 +259,19 @@ export function UnifiedLegalAssistant() {
             <CardHeader>
               <CardTitle className="flex items-center text-lg font-lora"><Icons.scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
             </CardHeader>
-            <CardContent className="min-h-[150px]">
-              {isProcessingQuery && !lawsResult && <div className="flex justify-center items-center h-full"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
-              {lawsResult && lawsResult.laws.length > 0 && (
-                <ul className="list-disc pl-5 space-y-1 text-sm">
-                  {lawsResult.laws.map((law, index) => (
-                    <li key={index}>{law}</li>
-                  ))}
-                </ul>
-              )}
-              {lawsResult && lawsResult.laws.length === 0 && <p className="text-muted-foreground text-sm">No specific laws or articles identified.</p>}
-               {!isProcessingQuery && !lawsResult && <p className="text-muted-foreground text-sm">Applicable laws and articles will appear here.</p>}
+            <CardContent className="min-h-[150px] flex-1 flex flex-col">
+              {isProcessingQuery && !lawsResult && renderLoadingState()}
+              {lawsResult ? (
+                lawsResult.laws.length > 0 ? (
+                  <ScrollArea className="flex-1">
+                    <ul className="list-disc pl-5 space-y-1 text-sm p-1">
+                      {lawsResult.laws.map((law, index) => (
+                        <li key={index}>{law}</li>
+                      ))}
+                    </ul>
+                  </ScrollArea>
+                ) : renderEmptyState("No specific laws or articles identified.")
+              ) : !isProcessingQuery ? renderEmptyState("Applicable laws and articles will appear here.") : null}
             </CardContent>
           </Card>
 
@@ -265,27 +280,29 @@ export function UnifiedLegalAssistant() {
               <CardTitle className="flex items-center text-lg font-lora"><Icons.fileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
                {precedentsResult && <CardDescription className="text-xs pt-1">Sourced from: {precedentsResult.sourceType}</CardDescription>}
             </CardHeader>
-            <CardContent className="min-h-[150px] space-y-3">
-              {isProcessingQuery && !precedentsResult && <div className="flex justify-center items-center h-full"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
-              {precedentsResult && precedentsResult.precedents.length > 0 && (
-                <ScrollArea className="h-[220px] pr-3 -mr-3">
-                  {precedentsResult.precedents.map((p, index) => (
-                    <div key={index} className="mb-3 p-3 border border-border/70 rounded-lg bg-background/40">
-                      <p className="font-semibold text-base font-lora">{p.caseName}</p>
-                      <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
-                      <p className="text-sm mt-2">{p.summary}</p>
-                      {p.differences && (
-                        <div className="mt-2 pt-2 border-t border-border/50">
-                            <p className="text-xs font-semibold text-accent">Notable Differences:</p>
-                            <p className="text-xs text-accent/80">{p.differences}</p>
-                        </div>
-                      )}
+            <CardContent className="min-h-[150px] flex-1 flex flex-col space-y-3">
+              {isProcessingQuery && !precedentsResult && renderLoadingState()}
+              {precedentsResult ? (
+                precedentsResult.precedents.length > 0 ? (
+                  <ScrollArea className="flex-1 pr-1"> {/* Ensure ScrollArea takes up available space */}
+                    <div className="space-y-3 p-1">
+                    {precedentsResult.precedents.map((p, index) => (
+                      <div key={index} className="p-3 border border-border/70 rounded-lg bg-background/40">
+                        <p className="font-semibold text-base font-lora">{p.caseName}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
+                        <p className="text-sm mt-2">{p.summary}</p>
+                        {p.differences && (
+                          <div className="mt-2 pt-2 border-t border-border/50">
+                              <p className="text-xs font-semibold text-accent">Notable Differences:</p>
+                              <p className="text-xs text-accent/80">{p.differences}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                     </div>
-                  ))}
-                </ScrollArea>
-              )}
-              {precedentsResult && precedentsResult.precedents.length === 0 && <p className="text-muted-foreground text-sm">No relevant precedents found.</p>}
-              {!isProcessingQuery && !precedentsResult && <p className="text-muted-foreground text-sm">Relevant past court cases will appear here.</p>}
+                  </ScrollArea>
+                ) : renderEmptyState("No relevant precedents found.")
+              ) : !isProcessingQuery ? renderEmptyState("Relevant past court cases will appear here.") : null}
             </CardContent>
           </Card>
 
@@ -293,17 +310,19 @@ export function UnifiedLegalAssistant() {
             <CardHeader>
               <CardTitle className="flex items-center text-lg font-lora"><Icons.listChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
             </CardHeader>
-            <CardContent className="min-h-[150px]">
-              {isProcessingQuery && !checklistResult && <div className="flex justify-center items-center h-full"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
-              {checklistResult && checklistResult.checklist.length > 0 && (
-                <ul className="list-decimal pl-5 space-y-1 text-sm">
-                  {checklistResult.checklist.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              )}
-              {checklistResult && checklistResult.checklist.length === 0 && <p className="text-muted-foreground text-sm">No procedural checklist generated.</p>}
-              {!isProcessingQuery && !checklistResult && <p className="text-muted-foreground text-sm">A procedural checklist based on your query will appear here.</p>}
+            <CardContent className="min-h-[150px] flex-1 flex flex-col">
+              {isProcessingQuery && !checklistResult && renderLoadingState()}
+              {checklistResult ? (
+                checklistResult.checklist.length > 0 ? (
+                  <ScrollArea className="flex-1">
+                    <ul className="list-decimal pl-5 space-y-1 text-sm p-1">
+                      {checklistResult.checklist.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </ScrollArea>
+                ) : renderEmptyState("No procedural checklist generated.")
+              ) : !isProcessingQuery ? renderEmptyState("A procedural checklist based on your query will appear here.") : null}
             </CardContent>
           </Card>
 
@@ -360,16 +379,20 @@ export function UnifiedLegalAssistant() {
                     'Summarize Document'
                   )}
                 </Button>
-                {isSummarizing && !summaryResult && <div className="flex justify-center items-center pt-4"><Icons.loader className="h-8 w-8 animate-spin text-primary" /></div>}
+                {isSummarizing && !summaryResult && renderLoadingState()}
                 {summaryResult && (
-                  <ScrollArea className="h-[150px] mt-4 pr-3 -mr-3">
+                  <ScrollArea className="h-[150px] mt-4 pr-1">
                     <div className="p-3 border border-border/70 rounded-lg bg-background/40">
                       <p className="font-semibold text-base font-lora">Summary:</p>
                       <p className="text-sm whitespace-pre-wrap">{summaryResult.summary}</p>
                     </div>
                   </ScrollArea>
                 )}
-                 {!isSummarizing && !summaryResult && !documentTextForSummary.trim() && <p className="text-muted-foreground text-sm text-center pt-2">Upload or paste a document to get a summary.</p>}
+                 {!isSummarizing && !summaryResult && !documentTextForSummary.trim() && (
+                   <div className="flex justify-center items-center pt-2">
+                    <p className="text-muted-foreground text-sm text-center">Upload or paste a document to get a summary.</p>
+                   </div>
+                  )}
               </CardContent>
             </Card>
         </div>

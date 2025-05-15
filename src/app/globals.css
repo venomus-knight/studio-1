@@ -43,15 +43,15 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem; /* Buttons in image have slight rounding */
 
-    /* Sidebar specific theme variables - light theme for sidebar */
-    --sidebar-background: 40 30% 94%; 
-    --sidebar-foreground: 40 25% 20%;
-    --sidebar-primary: 38 70% 60%; /* Accent color */
-    --sidebar-primary-foreground: 40 25% 20%;
-    --sidebar-accent: 40 30% 88%;
-    --sidebar-accent-foreground: 40 25% 15%;
-    --sidebar-border: 40 20% 85%;
-    --sidebar-ring: 38 70% 65%;
+    /* Sidebar specific theme variables - coffee theme for sidebar */
+    --sidebar-background: 30 35% 25%; /* Dark rich coffee brown */
+    --sidebar-foreground: 30 15% 88%; /* Off-white/light beige text */
+    --sidebar-primary: 38 65% 65%;   /* Ochre/gold for icon, slightly brighter for dark bg */
+    --sidebar-primary-foreground: 30 35% 15%; /* Dark text for on-primary elements if any */
+    --sidebar-accent: 30 30% 35%;   /* Hover/active background, slightly lighter coffee */
+    --sidebar-accent-foreground: 30 15% 92%; /* Text on hover/active, very light */
+    --sidebar-border: 30 30% 20%;   /* Border, slightly darker coffee */
+    --sidebar-ring: 38 70% 70%;     /* Ring color, brighter ochre/gold */
   }
 
   .dark {
@@ -80,14 +80,16 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 40 30% 94%;
-    --sidebar-foreground: 40 25% 20%;
-    --sidebar-primary: 38 70% 60%;
-    --sidebar-primary-foreground: 40 25% 20%;
-    --sidebar-accent: 40 30% 88%;
-    --sidebar-accent-foreground: 40 25% 15%;
-    --sidebar-border: 40 20% 85%;
-    --sidebar-ring: 38 70% 65%;
+
+    /* Dark mode sidebar - can be same as light or inverted if a dark theme is fully developed */
+    --sidebar-background: 30 35% 25%; 
+    --sidebar-foreground: 30 15% 88%;
+    --sidebar-primary: 38 65% 65%;
+    --sidebar-primary-foreground: 30 35% 15%;
+    --sidebar-accent: 30 30% 35%;
+    --sidebar-accent-foreground: 30 15% 92%;
+    --sidebar-border: 30 30% 20%;
+    --sidebar-ring: 38 70% 70%;
   }
 }
 
@@ -116,5 +118,5 @@ body {
 
 /* Applying new card style for assistant page */
 .assistant-card {
-  @apply rounded-lg border bg-card text-card-foreground shadow-lg;
+  @apply rounded-lg border bg-card text-card-foreground shadow-lg flex flex-col; /* Added flex flex-col */
 }
