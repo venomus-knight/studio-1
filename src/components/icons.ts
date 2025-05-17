@@ -53,7 +53,7 @@ const EmblemOfIndiaIcon = (props: NextImageIconProps) => {
   const { width = 24, height = 24, className, alt = "Emblem of India" } = props;
   return (
     <Image
-      src="/images/Emblem-of-India-01.svg" // Path from the public directory
+      src="public/images/Emblem-of-India-01.svg" // Path from the public directory
       alt={alt}
       width={width}
       height={height}
