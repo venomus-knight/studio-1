@@ -11,7 +11,13 @@ function LandingHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <PenTool className="h-8 w-8 text-accent" />
+          <Image 
+            src="/images/Emblem-of-India-01.svg"
+            alt="Emblem of India"
+            width={32}
+            height={32}
+            className="text-accent"
+          />
           <span className="font-bold sm:inline-block font-lora text-lg">
             NYAI <span className="text-accent font-lora">भारत</span>
           </span>
