@@ -93,7 +93,13 @@ export default function LandingPage() {
             </div>
           </div>
           <Card className="p-8 bg-card shadow-xl rounded-xl flex flex-col items-center justify-center space-y-6 min-h-[400px]">
-            <PenTool className="h-20 w-20 text-primary" />
+            <Image 
+              src="/images/Emblem-of-India-01.svg"
+              alt="Emblem of India"
+              width={80}
+              height={80}
+              className="text-primary"
+            />
             <h2 className="text-3xl font-bold text-center font-lora text-primary">NYAI</h2>
             <p className="text-center text-foreground/80">
               A modern legal research platform
