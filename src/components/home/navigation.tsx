@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link'; // Import Link
 import React from 'react';
-import { PenTool } from 'lucide-react';
+import Image from 'next/image';
 import { Icons } from '@/components/icons';
 
 export function Navigation() {
@@ -21,7 +21,13 @@ export function Navigation() {
       <SidebarContent>
         <SidebarHeader className="text-center p-4">
           <Link href="/" className="flex flex-col items-center space-y-1 group">
-            <PenTool className="h-12 w-12 text-sidebar-primary group-hover:text-accent" />
+            <Image 
+              src="/images/Emblem-of-India-01.svg"
+              alt="Emblem of India"
+              width={48}
+              height={48}
+              className="text-sidebar-primary group-hover:text-accent"
+            />
             <h1 className="font-semibold text-lg mt-2 font-lora text-sidebar-foreground group-hover:text-accent">
               NYAI
             </h1>
