@@ -1,12 +1,10 @@
-
 import type { SVGProps } from 'react';
-import Image from 'next/image'; // Import next/image
 import {
   ArrowRight,
   BookOpenCheck,
   Check,
   ChevronsUpDown,
-  Circle as LucideCircle, // Aliased to avoid potential conflicts
+  Circle as LucideCircle,
   Copy,
   Edit,
   ExternalLink,
@@ -39,30 +37,6 @@ import {
   Building,
 } from 'lucide-react';
 
-// Props for the Next/Image based icon component
-interface NextImageIconProps {
-  className?: string;
-  width?: number;
-  height?: number;
-  alt?: string;
-  // You can add other next/image compatible props here if needed
-}
-
-// Component to render the external SVG using next/image
-const EmblemOfIndiaIcon = (props: NextImageIconProps) => {
-  const { width = 24, height = 24, className, alt = "Emblem of India" } = props;
-  return (
-    <Image
-      src="public/images/Emblem-of-India-01.svg" // Path from the public directory
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-    />
-  );
-};
-
-// Custom Pen SVG Component (remains an inline SVG)
 const CustomPenIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
@@ -78,8 +52,7 @@ const CustomPenIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-
-const Icons = {
+export const Icons = {
   arrowRight: ArrowRight,
   check: Check,
   chevronDown: ChevronsUpDown,
@@ -110,15 +83,12 @@ const Icons = {
   precedentRetrieval: Scale,
   documentSummarizer: FileText,
   bookOpenCheck: BookOpenCheck,
-  scale: Scale, 
-  fileTextIcon: FileText, 
-  listChecks: ListChecks, 
-  bookOpenText: BookOpenText, 
-  library: Library, 
+  scale: Scale,
+  fileTextIcon: FileText,
+  listChecks: ListChecks,
+  bookOpenText: BookOpenText,
+  library: Library,
   landmark: Landmark,
   building: Building,
-  penTool: CustomPenIcon, 
-  emblemOfIndia: EmblemOfIndiaIcon, // Updated to use the new component
+  penTool: CustomPenIcon,
 };
-
-export { Icons };
