@@ -1,18 +1,19 @@
+
 import type { SVGProps } from 'react';
 import {
   ArrowRight,
   BookOpenCheck,
   Check,
   ChevronsUpDown,
-  Circle as LucideCircle, // Aliased
+  Circle as LucideCircle, // Aliased to avoid potential conflicts
   Copy,
   Edit,
   ExternalLink,
-  File, // Standard File icon
-  FileText as LucideFileText, // Aliased
+  File,
+  FileText,
   HelpCircle,
   Home,
-  Library as LucideLibrary, // Aliased
+  Library,
   Lightbulb,
   ListChecks,
   Loader2,
@@ -21,7 +22,7 @@ import {
   Moon,
   Plus,
   PlusCircle,
-  Scale as LucideScale, // Aliased
+  Scale,
   Search,
   Server,
   Settings,
@@ -31,22 +32,42 @@ import {
   Trash,
   User,
   Workflow,
-  X as XIcon, // lucide-react exports 'X', aliasing to XIcon
-  BookOpenText as LucideBookOpenText, // Aliased
+  X as XIcon,
+  BookOpenText,
+  Landmark,
+  Building,
+  // PenTool, // Removed from lucide-react
 } from 'lucide-react';
 
-// Extremely simplified EmblemOfIndia to bypass parsing errors.
-// It uses a minimal valid SVG structure.
+// A very simplified placeholder for EmblemOfIndia to avoid parsing issues
 const EmblemOfIndia = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 49.742 67.358"
+    viewBox="0 0 100 100"
     fill="currentColor"
     {...props}
   >
-    <path d="M10 10 H 39 V 57 H 10 Z" />
+    <rect width="100" height="100" />
   </svg>
 );
+
+// Custom Pen SVG Component
+const CustomPenIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24" // Adjust viewBox if your SVG has a different one
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    {/* Replace this with your actual SVG path data */}
+    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+    <path d="m15 5 4 4" />
+  </svg>
+);
+
 
 const Icons = {
   arrowRight: ArrowRight,
@@ -76,14 +97,17 @@ const Icons = {
   trash: Trash,
   user: User,
   clientAdvice: Lightbulb,
-  precedentRetrieval: LucideScale,
-  documentSummarizer: LucideFileText,
+  precedentRetrieval: Scale,
+  documentSummarizer: FileText,
   bookOpenCheck: BookOpenCheck,
-  scale: LucideScale, // For "Applicable Laws" card title
-  fileText: LucideFileText, // For "Similar Precedents" card title
+  scale: Scale, // For "Applicable Laws" card title
+  fileTextIcon: FileText, // For "Similar Precedents" card title - renamed to avoid conflict
   listChecks: ListChecks, // For "Procedural Checklist" card title
-  bookOpenText: LucideBookOpenText, // For "Simplify Document" card title
-  library: LucideLibrary, // For "My Custom Case Library" card title
+  bookOpenText: BookOpenText, // For "Simplify Document" card title
+  library: Library, // For "My Custom Case Library" card title
+  landmark: Landmark,
+  building: Building,
+  penTool: CustomPenIcon, // Updated to use the custom SVG component
   emblemOfIndia: EmblemOfIndia,
 };
 

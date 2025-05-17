@@ -8,9 +8,9 @@ import {Textarea} from '@/components/ui/textarea';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {Icons} from '@/components/icons';
 import {useToast} from '@/hooks/use-toast';
 import { Switch } from "@/components/ui/switch";
+import { Loader2, Scale, FileText, ListChecks, Library, PlusCircle, BookOpenText } from 'lucide-react';
 
 import {identifyLaws, type IdentifyLawsOutput} from '@/ai/flows/identify-laws-flow';
 import {retrievePrecedent, type RetrievePrecedentOutput} from '@/ai/flows/precedent-retrieval';
@@ -203,7 +203,7 @@ export function UnifiedLegalAssistant() {
 
   const renderLoadingState = () => (
     <div className="flex flex-1 justify-center items-center h-full p-4">
-      <Icons.loader className="h-8 w-8 animate-spin text-primary" />
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   );
 
@@ -244,7 +244,7 @@ export function UnifiedLegalAssistant() {
             <Button onClick={handleGetInsights} disabled={isProcessingQuery} size="lg" className="w-full text-base bg-primary text-primary-foreground hover:bg-primary/90">
               {isProcessingQuery ? (
                 <>
-                  <Icons.loader className="mr-2 h-5 w-5 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Processing Insights...
                 </>
               ) : (
@@ -257,7 +257,7 @@ export function UnifiedLegalAssistant() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><Icons.scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><Scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
             </CardHeader>
             <CardContent className="min-h-[150px] flex-1 flex flex-col">
               {isProcessingQuery && !lawsResult && renderLoadingState()}
@@ -277,7 +277,7 @@ export function UnifiedLegalAssistant() {
 
           <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><Icons.fileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><FileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
                {precedentsResult && <CardDescription className="text-xs pt-1">Sourced from: {precedentsResult.sourceType}</CardDescription>}
             </CardHeader>
             <CardContent className="min-h-[150px] flex-1 flex flex-col space-y-3">
@@ -308,7 +308,7 @@ export function UnifiedLegalAssistant() {
 
           <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><Icons.listChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><ListChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
             </CardHeader>
             <CardContent className="min-h-[150px] flex-1 flex flex-col">
               {isProcessingQuery && !checklistResult && renderLoadingState()}
@@ -328,7 +328,7 @@ export function UnifiedLegalAssistant() {
 
           <Card className="assistant-card md:col-span-2 lg:col-span-1">
             <CardHeader>
-                <CardTitle className="flex items-center text-lg font-lora"><Icons.library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
+                <CardTitle className="flex items-center text-lg font-lora"><Library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
                 <CardDescription className="text-xs pt-1">Upload your documents (.txt, .md) to create a personalized knowledge base for the AI to reference.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -337,7 +337,7 @@ export function UnifiedLegalAssistant() {
                   <Input id="custom-rag-upload" type="file" onChange={handleCustomRagFileChange} accept=".txt,.md" className="mt-1"/>
                 </div>
                 <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile || isAddingToLibrary} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  {isAddingToLibrary ? <Icons.loader className="mr-2 h-4 w-4 animate-spin" /> : <Icons.plusCircle className="mr-2 h-4 w-4" />}
+                  {isAddingToLibrary ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
                   {isAddingToLibrary ? 'Adding...' : 'Add to My Library'}
                 </Button>
                 <div className="mt-2 text-center">
@@ -351,7 +351,7 @@ export function UnifiedLegalAssistant() {
 
             <Card className="assistant-card md:col-span-2">
               <CardHeader>
-                <CardTitle className="flex items-center text-lg font-lora"><Icons.bookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
+                <CardTitle className="flex items-center text-lg font-lora"><BookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
                  <CardDescription className="text-xs pt-1">Upload or paste text from a single document (.txt, .md) to get a simplified summary.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -372,7 +372,7 @@ export function UnifiedLegalAssistant() {
                 <Button onClick={handleSummarizeDocument} disabled={isSummarizing || !documentTextForSummary.trim()} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   {isSummarizing ? (
                     <>
-                      <Icons.loader className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Summarizing...
                     </>
                   ) : (
