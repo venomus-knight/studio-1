@@ -12,6 +12,7 @@ import {
 import Link from 'next/link'; // Import Link
 import React from 'react';
 import { PenTool } from 'lucide-react';
+import { Icons } from '@/components/icons';
 
 export function Navigation() {
   return (
@@ -20,7 +21,10 @@ export function Navigation() {
       <SidebarContent>
         <SidebarHeader className="text-center p-4">
           <Link href="/" className="flex flex-col items-center space-y-1 group">
-            <PenTool className="h-12 w-12 text-sidebar-primary group-hover:text-accent" />
+            <div className="flex items-center gap-4">
+              <Icons.emblemOfIndia width={48} height={48} className="text-sidebar-primary" />
+              <PenTool className="h-12 w-12 text-sidebar-primary group-hover:text-accent" />
+            </div>
             <h1 className="font-semibold text-lg mt-2 font-lora text-sidebar-foreground group-hover:text-accent">
               NYAI
             </h1>
