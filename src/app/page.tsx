@@ -44,14 +44,7 @@ function LandingHeader() {
           >
             Pricing
           </Link>
-          <Button 
-            size="sm" 
-            onClick={() => {
-              const { signInWithGoogle } = useAuth();
-              signInWithGoogle();
-            }} 
-            className="bg-primary"
-          >
+          <Button size="sm" onClick={() => useAuth().signInWithGoogle()} className="bg-primary">
             Get Started
           </Button>
           <Button variant="outline" size="sm" asChild>

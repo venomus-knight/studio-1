@@ -1,6 +1,9 @@
+// src/app/assistant/page.tsx
 'use client';
 
 import {UnifiedLegalAssistant} from '@/components/home/unified-legal-assistant';
+
+'use client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
