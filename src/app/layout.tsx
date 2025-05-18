@@ -2,7 +2,8 @@ import type {Metadata} from 'next';
 import { Inter, Lora } from 'next/font/google';
 import './globals.css';
 import {Toaster} from '@/components/ui/toaster';
-
+import { AuthProvider } from '@/contexts/auth-context';
+import { HistoryProvider } from '@/contexts/history-context';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -20,16 +21,15 @@ export const metadata: Metadata = {
     'Access landmark judgments from the Supreme Court of India and High Courts. Find relevant case precedents with advanced AI powered by Indian legal knowledge.',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${lora.variable} antialiased`}>
-        {children}
-        <Toaster />
+      <body>
+        <AuthProvider>
+          <HistoryProvider>
+            {children}
+          </HistoryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

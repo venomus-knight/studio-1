@@ -1,4 +1,3 @@
-// src/app/assistant/layout.tsx
 'use client';
 import { Navigation } from '@/components/home/navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';

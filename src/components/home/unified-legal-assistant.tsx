@@ -19,9 +19,15 @@ import {summarizeDocument, type SummarizeDocumentOutput} from '@/ai/flows/docume
 import {addDocumentToCustomLibrary, type AddDocumentInput} from '@/ai/flows/add-custom-document-flow';
 import {fetchCloudflareRag, type FetchCloudflareRagResult} from '@/app/actions/fetch-cloudflare-rag';
 import {parseStructuredLegalInfo, type ParseStructuredLegalInfoOutput} from '@/ai/flows/parse-structured-legal-info-flow';
+import { useAuth } from '@/contexts/auth-context';
+import { useHistory } from '@/contexts/history-context';
+import { saveQueryHistory } from '@/services/history-service';
+
 
 
 export function UnifiedLegalAssistant() {
+  const { user, isDemo, endDemo } = useAuth();
+  const { triggerRefresh } = useHistory();
   const {toast} = useToast();
 
   // Main query states
@@ -43,6 +49,33 @@ export function UnifiedLegalAssistant() {
   const [customRagFile, setCustomRagFile] = useState<File | null>(null);
   const [customRagFileContent, setCustomRagFileContent] = useState<string | null>(null);
   const [isAddingToLibrary, setIsAddingToLibrary] = useState(false);
+
+
+  React.useEffect(() => {
+    const handleRestoreHistory = (event: CustomEvent) => {
+      const { query, lawsResult, precedentsResult, checklistResult } = event.detail;
+      
+      // Restore the query and results
+      setMainQuery(query);
+      if (lawsResult) setLawsResult(lawsResult);
+      if (precedentsResult) setPrecedentsResult(precedentsResult);
+      if (checklistResult) setChecklistResult(checklistResult);
+      
+      // Scroll to the query input area
+      const queryInputElement = document.querySelector('.assistant-card');
+      if (queryInputElement) {
+        queryInputElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('restore-query-history', handleRestoreHistory as EventListener);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('restore-query-history', handleRestoreHistory as EventListener);
+    };
+  }, []);
 
 
   const handleFileChangeForSummary = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,13 +207,37 @@ export function UnifiedLegalAssistant() {
           toast({title: 'No Structured Insights (Cloudflare)', description: 'Could not structure insights from Cloudflare response. The raw response might be incomplete or not in the expected format.', variant: 'destructive'});
         }
       }
+
+      if (user && !isDemo && (lawsResult || precedentsResult || checklistResult)) {
+        try {
+          await saveQueryHistory({
+            userId: user.uid,
+            query: mainQuery,
+            lawsResult: lawsResult,
+            precedentsResult: precedentsResult,
+            checklistResult: checklistResult,
+          });
+          triggerRefresh(); // Refresh history after saving
+        } catch (error) {
+          console.error('Error saving query history:', error);
+        }
+      }
+
+      if (isDemo) {
+        // Show a toast notification that demo is complete
+        toast({
+          title: 'Demo Complete',
+          description: 'Sign in to continue using NYAI and save your query history.',
+          duration: 5000,
+        });
+      }
     } catch (error: any) {
       console.error('Error processing query:', error);
-      toast({title: 'Processing Error', description: error.message || 'An unexpected error occurred.', variant: 'destructive'});
+      toast({title: 'Error', description: error.message || 'An unknown error occurred.', variant: 'destructive'});
     } finally {
       setIsProcessingQuery(false);
     }
-  }, [mainQuery, toast, useCustomLibrary]);
+  }, [mainQuery, toast, useCustomLibrary, user, isDemo, triggerRefresh]);
 
   const handleSummarizeDocument = useCallback(async () => {
     if (!documentTextForSummary.trim()) {
