@@ -4,12 +4,12 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID", 
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyC55EgH4SDCc56H-kHVzR2dnx39xwKjFNY",
+  authDomain: "nyai-bb71b.firebaseapp.com",
+  projectId: "nyai-bb71b", 
+  storageBucket: "nyai-bb71b.firebasestorage.app",
+  messagingSenderId: "344560773883",
+  appId: "1:344560773883:web:e57d092094c7ec49499e5e"
 };
 
 const app = initializeApp(firebaseConfig);
