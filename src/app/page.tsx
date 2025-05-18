@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PenTool, ArrowRight, Landmark, Building, BookOpen } from 'lucide-react';
-import { signInWithGoogle } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Header component for the landing page
 function LandingHeader() {
@@ -44,7 +44,7 @@ function LandingHeader() {
           >
             Pricing
           </Link>
-          <Button size="sm" onClick={() => signInWithGoogle()} className="bg-primary">
+          <Button size="sm" onClick={() => useAuth().signInWithGoogle()} className="bg-primary">
             Get Started
           </Button>
           <Button variant="outline" size="sm" asChild>
