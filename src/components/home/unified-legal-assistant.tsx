@@ -254,75 +254,69 @@ export function UnifiedLegalAssistant() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <Card className="assistant-card">
             <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><Scale className="mr-2 h-5 w-5 text-primary" />Applicable Laws</CardTitle>
+              <CardTitle className="flex items-center text-lg font-lora"><Scale className="mr-2 h-5 w-5 text-primary" />Legal Analysis</CardTitle>
+              {precedentsResult && <CardDescription className="text-xs pt-1">Precedents sourced from: {precedentsResult.sourceType}</CardDescription>}
             </CardHeader>
-            <CardContent className="min-h-[150px] flex-1 flex flex-col">
-              {isProcessingQuery && !lawsResult && renderLoadingState()}
-              {lawsResult ? (
-                lawsResult.laws.length > 0 ? (
-                  <ScrollArea className="flex-1">
-                    <ul className="list-disc pl-5 space-y-1 text-sm p-1">
-                      {lawsResult.laws.map((law, index) => (
-                        <li key={index}>{law}</li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                ) : renderEmptyState("No specific laws or articles identified.")
-              ) : !isProcessingQuery ? renderEmptyState("Applicable laws and articles will appear here.") : null}
-            </CardContent>
-          </Card>
+            <CardContent className="min-h-[450px] flex-1 flex flex-col">
+              {isProcessingQuery && !lawsResult && !precedentsResult && !checklistResult && renderLoadingState()}
+              <ScrollArea className="flex-1">
+                <div className="space-y-6">
+                  {/* Applicable Laws Section */}
+                  <div>
+                    <h3 className="font-semibold mb-2">Applicable Laws:</h3>
+                    {lawsResult ? (
+                      lawsResult.laws.length > 0 ? (
+                        <ul className="list-disc pl-5 space-y-1 text-sm">
+                          {lawsResult.laws.map((law, index) => (
+                            <li key={index}>{law}</li>
+                          ))}
+                        </ul>
+                      ) : <p className="text-sm text-muted-foreground">No specific laws or articles identified.</p>
+                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Applicable laws and articles will appear here.</p> : null}
+                  </div>
 
-          <Card className="assistant-card">
-            <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><FileText className="mr-2 h-5 w-5 text-primary" />Similar Precedents</CardTitle>
-               {precedentsResult && <CardDescription className="text-xs pt-1">Sourced from: {precedentsResult.sourceType}</CardDescription>}
-            </CardHeader>
-            <CardContent className="min-h-[150px] flex-1 flex flex-col space-y-3">
-              {isProcessingQuery && !precedentsResult && renderLoadingState()}
-              {precedentsResult ? (
-                precedentsResult.precedents.length > 0 ? (
-                  <ScrollArea className="flex-1 pr-1"> {/* Ensure ScrollArea takes up available space */}
-                    <div className="space-y-3 p-1">
-                    {precedentsResult.precedents.map((p, index) => (
-                      <div key={index} className="p-3 border border-border/70 rounded-lg bg-background/40">
-                        <p className="font-semibold text-base font-lora">{p.caseName}</p>
-                        <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
-                        <p className="text-sm mt-2">{p.summary}</p>
-                        {p.differences && (
-                          <div className="mt-2 pt-2 border-t border-border/50">
-                              <p className="text-xs font-semibold text-accent">Notable Differences:</p>
-                              <p className="text-xs text-accent/80">{p.differences}</p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    </div>
-                  </ScrollArea>
-                ) : renderEmptyState("No relevant precedents found.")
-              ) : !isProcessingQuery ? renderEmptyState("Relevant past court cases will appear here.") : null}
-            </CardContent>
-          </Card>
+                  {/* Similar Precedents Section */}
+                  <div>
+                    <h3 className="font-semibold mb-2">Similar Precedents:</h3>
+                    {precedentsResult ? (
+                      precedentsResult.precedents.length > 0 ? (
+                        <div className="space-y-3">
+                          {precedentsResult.precedents.map((p, index) => (
+                            <div key={index} className="p-3 border border-border/70 rounded-lg bg-background/40">
+                              <p className="font-semibold text-base font-lora">{p.caseName}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
+                              <p className="text-sm mt-2">{p.summary}</p>
+                              {p.differences && (
+                                <div className="mt-2 pt-2 border-t border-border/50">
+                                  <p className="text-xs font-semibold text-accent">Notable Differences:</p>
+                                  <p className="text-xs text-accent/80">{p.differences}</p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : <p className="text-sm text-muted-foreground">No relevant precedents found.</p>
+                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Relevant past court cases will appear here.</p> : null}
+                  </div>
 
-          <Card className="assistant-card">
-            <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><ListChecks className="mr-2 h-5 w-5 text-primary" />Procedural Checklist</CardTitle>
-            </CardHeader>
-            <CardContent className="min-h-[150px] flex-1 flex flex-col">
-              {isProcessingQuery && !checklistResult && renderLoadingState()}
-              {checklistResult ? (
-                checklistResult.checklist.length > 0 ? (
-                  <ScrollArea className="flex-1">
-                    <ul className="list-decimal pl-5 space-y-1 text-sm p-1">
-                      {checklistResult.checklist.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                ) : renderEmptyState("No procedural checklist generated.")
-              ) : !isProcessingQuery ? renderEmptyState("A procedural checklist based on your query will appear here.") : null}
+                  {/* Procedural Checklist Section */}
+                  <div>
+                    <h3 className="font-semibold mb-2">Procedural Checklist:</h3>
+                    {checklistResult ? (
+                      checklistResult.checklist.length > 0 ? (
+                        <ul className="list-decimal pl-5 space-y-1 text-sm">
+                          {checklistResult.checklist.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : <p className="text-sm text-muted-foreground">No procedural checklist generated.</p>
+                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">A procedural checklist based on your query will appear here.</p> : null}
+                  </div>
+                </div>
+              </ScrollArea>
             </CardContent>
           </Card>
 
