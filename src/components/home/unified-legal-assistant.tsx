@@ -30,6 +30,32 @@ export function UnifiedLegalAssistant() {
   const [lawsResult, setLawsResult] = useState<IdentifyLawsOutput | null>(null);
   const [precedentsResult, setPrecedentsResult] = useState<Omit<RetrievePrecedentOutput, 'sourceType'> & { sourceType: string } | null>(null);
   const [checklistResult, setChecklistResult] = useState<GenerateChecklistOutput | null>(null);
+  const { user } = useAuth();
+
+  const saveToFirestore = async () => {
+    if (!user || !mainQuery) return;
+
+    try {
+      const chatRef = await addDoc(collection(db, 'chats'), {
+        userId: user.uid,
+        query: mainQuery,
+        laws: lawsResult,
+        precedents: precedentsResult,
+        checklist: checklistResult,
+        createdAt: serverTimestamp(),
+      });
+      
+      console.log('Saved chat:', chatRef.id);
+    } catch (error) {
+      console.error('Error saving chat:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (lawsResult && precedentsResult && checklistResult) {
+      saveToFirestore();
+    }
+  }, [lawsResult, precedentsResult, checklistResult]);
   const [useCustomLibrary, setUseCustomLibrary] = useState(false);
 
 
