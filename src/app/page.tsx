@@ -1,12 +1,9 @@
-
-"use client";
-
+// src/app/page.tsx (New Landing Page)
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PenTool, ArrowRight, Landmark, Building, BookOpen } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 
 // Header component for the landing page
 function LandingHeader() {
@@ -44,11 +41,11 @@ function LandingHeader() {
           >
             Pricing
           </Link>
-          <Button size="sm" onClick={() => useAuth().signInWithGoogle()} className="bg-primary">
-            Get Started
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/assistant">Sign In</Link>
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/assistant">Free Trial</Link>
+          <Button size="sm" asChild>
+            <Link href="/assistant">Get Started</Link>
           </Button>
            <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent/10">
             सत्यमेव जयते
@@ -58,6 +55,7 @@ function LandingHeader() {
     </header>
   );
 }
+
 
 export default function LandingPage() {
   return (
@@ -114,7 +112,7 @@ export default function LandingPage() {
           </Card>
         </section>
       </main>
-      <footer className="py-8 border-t">
+       <footer className="py-8 border-t">
         <div className="container text-center text-sm text-foreground/60">
           © {new Date().getFullYear()} NYAI. All rights reserved.
         </div>
