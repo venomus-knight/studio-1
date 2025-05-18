@@ -11,9 +11,9 @@ export default function AssistantLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-background">
+      <div className="flex h-screen w-full overflow-hidden bg-background">
         <Navigation />
-        {children}
+        <div className="flex-1 overflow-auto">{children}</div>
       </div>
     </SidebarProvider>
   );

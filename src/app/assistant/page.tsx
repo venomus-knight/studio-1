@@ -5,6 +5,8 @@ import {UnifiedLegalAssistant} from '@/components/home/unified-legal-assistant';
 
 export default function AssistantPage() {
   return (
-    <UnifiedLegalAssistant />
+    <div className="w-full h-full">
+      <UnifiedLegalAssistant />
+    </div>
   );
 }

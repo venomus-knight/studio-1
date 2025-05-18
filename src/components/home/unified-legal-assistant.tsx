@@ -216,7 +216,7 @@ export function UnifiedLegalAssistant() {
 
   return (
     <ScrollArea className="flex-1 h-full bg-background">
-      <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+      <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 max-w-screen-2xl">
         <Card className="assistant-card">
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl font-lora">Legal Query Input</CardTitle>
@@ -254,141 +254,142 @@ export function UnifiedLegalAssistant() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 gap-6">
-          <Card className="assistant-card">
-            <CardHeader>
-              <CardTitle className="flex items-center text-lg font-lora"><Scale className="mr-2 h-5 w-5 text-primary" />Legal Analysis</CardTitle>
-              {precedentsResult && <CardDescription className="text-xs pt-1">Precedents sourced from: {precedentsResult.sourceType}</CardDescription>}
-            </CardHeader>
-            <CardContent className="min-h-[450px] flex-1 flex flex-col">
-              {isProcessingQuery && !lawsResult && !precedentsResult && !checklistResult && renderLoadingState()}
-              <ScrollArea className="flex-1">
-                <div className="space-y-6">
-                  {/* Applicable Laws Section */}
-                  <div>
-                    <h3 className="font-semibold mb-2">Applicable Laws:</h3>
-                    {lawsResult ? (
-                      lawsResult.laws.length > 0 ? (
-                        <ul className="list-disc pl-5 space-y-1 text-sm">
-                          {lawsResult.laws.map((law, index) => (
-                            <li key={index}>{law}</li>
-                          ))}
-                        </ul>
-                      ) : <p className="text-sm text-muted-foreground">No specific laws or articles identified.</p>
-                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Applicable laws and articles will appear here.</p> : null}
-                  </div>
-
-                  {/* Similar Precedents Section */}
-                  <div>
-                    <h3 className="font-semibold mb-2">Similar Precedents:</h3>
-                    {precedentsResult ? (
-                      precedentsResult.precedents.length > 0 ? (
-                        <div className="space-y-3">
-                          {precedentsResult.precedents.map((p, index) => (
-                            <div key={index} className="p-3 border border-border/70 rounded-lg bg-background/40">
-                              <p className="font-semibold text-base font-lora">{p.caseName}</p>
-                              <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
-                              <p className="text-sm mt-2">{p.summary}</p>
-                              {p.differences && (
-                                <div className="mt-2 pt-2 border-t border-border/50">
-                                  <p className="text-xs font-semibold text-accent">Notable Differences:</p>
-                                  <p className="text-xs text-accent/80">{p.differences}</p>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      ) : <p className="text-sm text-muted-foreground">No relevant precedents found.</p>
-                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Relevant past court cases will appear here.</p> : null}
-                  </div>
-
-                  {/* Procedural Checklist Section */}
-                  <div>
-                    <h3 className="font-semibold mb-2">Procedural Checklist:</h3>
-                    {checklistResult ? (
-                      checklistResult.checklist.length > 0 ? (
-                        <ul className="list-decimal pl-5 space-y-1 text-sm">
-                          {checklistResult.checklist.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : <p className="text-sm text-muted-foreground">No procedural checklist generated.</p>
-                    ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">A procedural checklist based on your query will appear here.</p> : null}
-                  </div>
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-
-          <Card className="assistant-card md:col-span-2 lg:col-span-1">
-            <CardHeader>
-                <CardTitle className="flex items-center text-lg font-lora"><Library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
-                <CardDescription className="text-xs pt-1">Upload your documents (.txt, .md) to create a personalized knowledge base for the AI to reference.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
+        {/* Legal Analysis covering the full width */}
+        <Card className="assistant-card">
+          <CardHeader>
+            <CardTitle className="flex items-center text-lg font-lora"><Scale className="mr-2 h-5 w-5 text-primary" />Legal Analysis</CardTitle>
+            {precedentsResult && <CardDescription className="text-xs pt-1">Precedents sourced from: {precedentsResult.sourceType}</CardDescription>}
+          </CardHeader>
+          <CardContent className="min-h-[450px] flex-1 flex flex-col">
+            {isProcessingQuery && !lawsResult && !precedentsResult && !checklistResult && renderLoadingState()}
+            <ScrollArea className="flex-1">
+              <div className="space-y-6">
+                {/* Applicable Laws Section */}
                 <div>
-                  <Label htmlFor="custom-rag-upload" className="text-sm font-medium">Upload Document</Label>
-                  <Input id="custom-rag-upload" type="file" onChange={handleCustomRagFileChange} accept=".txt,.md" className="mt-1"/>
+                  <h3 className="font-semibold mb-2">Applicable Laws:</h3>
+                  {lawsResult ? (
+                    lawsResult.laws.length > 0 ? (
+                      <ul className="list-disc pl-5 space-y-1 text-sm">
+                        {lawsResult.laws.map((law, index) => (
+                          <li key={index}>{law}</li>
+                        ))}
+                      </ul>
+                    ) : <p className="text-sm text-muted-foreground">No specific laws or articles identified.</p>
+                  ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Applicable laws and articles will appear here.</p> : null}
                 </div>
-                <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile || isAddingToLibrary} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  {isAddingToLibrary ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-                  {isAddingToLibrary ? 'Adding...' : 'Add to My Library'}
-                </Button>
-                <div className="mt-2 text-center">
-                    <p className="text-xs text-muted-foreground">
-                        {customRagFile ? `Selected: ${customRagFile.name}` : "No document selected."}
-                    </p>
+
+                {/* Similar Precedents Section */}
+                <div>
+                  <h3 className="font-semibold mb-2">Similar Precedents:</h3>
+                  {precedentsResult ? (
+                    precedentsResult.precedents.length > 0 ? (
+                      <div className="space-y-3">
+                        {precedentsResult.precedents.map((p, index) => (
+                          <div key={index} className="p-3 border border-border/70 rounded-lg bg-background/40">
+                            <p className="font-semibold text-base font-lora">{p.caseName}</p>
+                            <p className="text-xs text-muted-foreground mt-1">Citation: {p.citation}</p>
+                            <p className="text-sm mt-2">{p.summary}</p>
+                            {p.differences && (
+                              <div className="mt-2 pt-2 border-t border-border/50">
+                                <p className="text-xs font-semibold text-accent">Notable Differences:</p>
+                                <p className="text-xs text-accent/80">{p.differences}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : <p className="text-sm text-muted-foreground">No relevant precedents found.</p>
+                  ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">Relevant past court cases will appear here.</p> : null}
                 </div>
-            </CardContent>
-          </Card>
 
+                {/* Procedural Checklist Section */}
+                <div>
+                  <h3 className="font-semibold mb-2">Procedural Checklist:</h3>
+                  {checklistResult ? (
+                    checklistResult.checklist.length > 0 ? (
+                      <ul className="list-decimal pl-5 space-y-1 text-sm">
+                        {checklistResult.checklist.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : <p className="text-sm text-muted-foreground">No procedural checklist generated.</p>
+                  ) : !isProcessingQuery ? <p className="text-sm text-muted-foreground">A procedural checklist based on your query will appear here.</p> : null}
+                </div>
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
 
-            <Card className="assistant-card md:col-span-2">
+        {/* Side-by-side layout for Custom Library and Document Simplification */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="assistant-card h-full">
               <CardHeader>
-                <CardTitle className="flex items-center text-lg font-lora"><BookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
-                 <CardDescription className="text-xs pt-1">Upload or paste text from a single document (.txt, .md) to get a simplified summary.</CardDescription>
+                  <CardTitle className="flex items-center text-lg font-lora"><Library className="mr-2 h-5 w-5 text-primary" />My Custom Case Library</CardTitle>
+                  <CardDescription className="text-xs pt-1">Upload your documents (.txt, .md) to create a personalized knowledge base for the AI to reference.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="document-upload" className="text-sm font-medium">Upload Document</Label>
-                  <Input id="document-upload" type="file" onChange={handleFileChangeForSummary} accept=".txt,.md" className="mt-1"/>
-                </div>
-                <Textarea
-                  placeholder="Or paste document text here..."
-                  value={documentTextForSummary}
-                  onChange={e => {
-                    setDocumentTextForSummary(e.target.value);
-                    if (documentFileForSummary) setDocumentFileForSummary(null); 
-                  }}
-                  rows={6}
-                  className="text-sm"
-                />
-                <Button onClick={handleSummarizeDocument} disabled={isSummarizing || !documentTextForSummary.trim()} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  {isSummarizing ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Summarizing...
-                    </>
-                  ) : (
-                    'Summarize Document'
-                  )}
-                </Button>
-                {isSummarizing && !summaryResult && renderLoadingState()}
-                {summaryResult && (
-                  <ScrollArea className="h-[150px] mt-4 pr-1">
-                    <div className="p-3 border border-border/70 rounded-lg bg-background/40">
-                      <p className="font-semibold text-base font-lora">Summary:</p>
-                      <p className="text-sm whitespace-pre-wrap">{summaryResult.summary}</p>
-                    </div>
-                  </ScrollArea>
-                )}
-                 {!isSummarizing && !summaryResult && !documentTextForSummary.trim() && (
-                   <div className="flex justify-center items-center pt-2">
-                    <p className="text-muted-foreground text-sm text-center">Upload or paste a document to get a summary.</p>
-                   </div>
-                  )}
+              <CardContent className="space-y-3">
+                  <div>
+                    <Label htmlFor="custom-rag-upload" className="text-sm font-medium">Upload Document</Label>
+                    <Input id="custom-rag-upload" type="file" onChange={handleCustomRagFileChange} accept=".txt,.md" className="mt-1"/>
+                  </div>
+                  <Button onClick={handleAddCustomRagDocument} disabled={!customRagFile || isAddingToLibrary} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    {isAddingToLibrary ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
+                    {isAddingToLibrary ? 'Adding...' : 'Add to My Library'}
+                  </Button>
+                  <div className="mt-2 text-center">
+                      <p className="text-xs text-muted-foreground">
+                          {customRagFile ? `Selected: ${customRagFile.name}` : "No document selected."}
+                      </p>
+                  </div>
               </CardContent>
-            </Card>
+          </Card>
+
+          <Card className="assistant-card h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg font-lora"><BookOpenText className="mr-2 h-5 w-5 text-primary" />Simplify Document</CardTitle>
+               <CardDescription className="text-xs pt-1">Upload or paste text from a single document (.txt, .md) to get a simplified summary.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="document-upload" className="text-sm font-medium">Upload Document</Label>
+                <Input id="document-upload" type="file" onChange={handleFileChangeForSummary} accept=".txt,.md" className="mt-1"/>
+              </div>
+              <Textarea
+                placeholder="Or paste document text here..."
+                value={documentTextForSummary}
+                onChange={e => {
+                  setDocumentTextForSummary(e.target.value);
+                  if (documentFileForSummary) setDocumentFileForSummary(null); 
+                }}
+                rows={6}
+                className="text-sm"
+              />
+              <Button onClick={handleSummarizeDocument} disabled={isSummarizing || !documentTextForSummary.trim()} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                {isSummarizing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Summarizing...
+                  </>
+                ) : (
+                  'Summarize Document'
+                )}
+              </Button>
+              {isSummarizing && !summaryResult && renderLoadingState()}
+              {summaryResult && (
+                <ScrollArea className="h-[150px] mt-4 pr-1">
+                  <div className="p-3 border border-border/70 rounded-lg bg-background/40">
+                    <p className="font-semibold text-base font-lora">Summary:</p>
+                    <p className="text-sm whitespace-pre-wrap">{summaryResult.summary}</p>
+                  </div>
+                </ScrollArea>
+              )}
+               {!isSummarizing && !summaryResult && !documentTextForSummary.trim() && (
+                 <div className="flex justify-center items-center pt-2">
+                  <p className="text-muted-foreground text-sm text-center">Upload or paste a document to get a summary.</p>
+                 </div>
+                )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </ScrollArea>
