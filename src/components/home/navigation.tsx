@@ -39,6 +39,7 @@ export function Navigation() {
           <p className="text-xs text-muted-foreground">
             Enter your legal query or upload a document to get started.
           </p>
+          <ChatHistory />
         </div>
       </SidebarContent>
       <SidebarFooter className="text-center p-4">

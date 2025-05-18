@@ -41,11 +41,11 @@ function LandingHeader() {
           >
             Pricing
           </Link>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/assistant">Sign In</Link>
+          <Button size="sm" onClick={() => signInWithGoogle()} className="bg-primary">
+            Get Started
           </Button>
-          <Button size="sm" asChild>
-            <Link href="/assistant">Get Started</Link>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/assistant">Free Trial</Link>
           </Button>
            <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent/10">
             सत्यमेव जयते
